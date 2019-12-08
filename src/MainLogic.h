@@ -8,8 +8,8 @@ class MainLogic {
     public:
     MainLogic();
 
-    void NewVolumeCallback(uint8_t vol);
-    void NewSourceCallback(char* source, unsigned int len);
+    void NewVolumeCallback(float vol);
+    void NewSourceCallback(String source);
     void NewMuteStatusCallback(bool mute);
 
 

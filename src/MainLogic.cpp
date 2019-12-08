@@ -7,19 +7,22 @@
  }
 
 
-void MainLogic::NewVolumeCallback(uint8_t vol)
+void MainLogic::NewVolumeCallback(float vol)
 {
+    Serial.print("v: ");
     Serial.println(vol);
 
 }
 
-void MainLogic::NewSourceCallback(char* source, unsigned int len)
+void MainLogic::NewSourceCallback(String source)
 {
+    Serial.print("s: ");
     Serial.println(source);
 }
 
 
 void MainLogic::NewMuteStatusCallback(bool mute)
 {
+    Serial.print("m: ");
     Serial.println(mute);
 }

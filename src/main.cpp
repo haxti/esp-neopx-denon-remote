@@ -66,13 +66,13 @@ void setup()
       logic.NewMuteStatusCallback(mute);
   });
 
-  /*msgInt.SetNewVolumeCallback([](uint8_t vol) {
+  msgInt.SetNewVolumeCallback([](float vol) {
       logic.NewVolumeCallback(vol);
   });
 
-  msgInt.SetNewSourceCallback([](char* src, unsigned int len) {
-      logic.NewSourceCallback(src, len);
-  });*/
+  msgInt.SetNewSourceCallback([](String src) {
+      logic.NewSourceCallback(src);
+  });
 
   Serial.println("Logic init done");
 }

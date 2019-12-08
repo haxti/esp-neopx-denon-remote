@@ -10,10 +10,10 @@ MqttMessageInterpreter::MqttMessageInterpreter()
 
 void MqttMessageInterpreter::MqttClientCallback(char* topic, byte* payload, unsigned int length)
  {
+    payload[length] = NULL;
     digitalWrite(LED_BUILTIN, LOW);
     m_Topic = topic;
-    m_Payload = payload;
-    m_PayloadLen = length;
+    m_PayloadStr = (char*)payload;
     interpretTopic();
     digitalWrite(LED_BUILTIN, HIGH);
  }
@@ -22,23 +22,24 @@ void MqttMessageInterpreter::MqttClientCallback(char* topic, byte* payload, unsi
 
  void MqttMessageInterpreter::interpretTopic()
  {
+     Serial.println("String: "+ m_PayloadStr);
      if(m_Topic == nullptr)
         return;
 
     if(strcmp(m_Topic, GLOBALS_TOPIC_GET_VOL) == 0)
     {
         if(volCallback)
-            volCallback(static_cast<uint8_t>(*m_Payload));
+            volCallback(m_PayloadStr.toFloat());
     }
     else if(strcmp(m_Topic, GLOBALS_TOPIC_GET_SOURCE) == 0)
     {
         if(srcCallback)
-            srcCallback((char*)m_Payload, m_PayloadLen);
+            srcCallback(m_PayloadStr);
     }
     else if(strcmp(m_Topic, GLOBALS_TOPIC_GET_MUTE) == 0)
     {
         if(muteCallback)
-            muteCallback(static_cast<bool>(strcmp("true", (char*)m_Payload) == 0));
+            muteCallback(static_cast<bool>(m_PayloadStr.equals("true")));
     }
     else
     {
@@ -47,19 +48,19 @@ void MqttMessageInterpreter::MqttClientCallback(char* topic, byte* payload, unsi
     }  
  }
 
-MqttMessageInterpreter& SetNewVolumeCallback(MQTT_MESSAGE_INTERPRETER_VOLUME_CALLBACK)
+void MqttMessageInterpreter::SetNewVolumeCallback(MQTT_MESSAGE_INTERPRETER_VOLUME_CALLBACK)
 {
-    return;
+    this->volCallback = volCallback;
 }
 
 
-MqttMessageInterpreter& SetNewSourceCallback(MQTT_MESSAGE_INTERPRETER_SOURCE_CALLBACK)
+void MqttMessageInterpreter::SetNewSourceCallback(MQTT_MESSAGE_INTERPRETER_SOURCE_CALLBACK)
 {
-    return;
+    this->srcCallback = srcCallback;
 }
 
 
-MqttMessageInterpreter& SetNewMuteCallback(MQTT_MESSAGE_INTERPRETER_MUTE_CALLBACK)
+void MqttMessageInterpreter::SetNewMuteCallback(MQTT_MESSAGE_INTERPRETER_MUTE_CALLBACK)
 {
-    return;
+    this->muteCallback = muteCallback;
 }
